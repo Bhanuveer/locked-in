@@ -33,10 +33,15 @@ export function Navbar() {
   const links = user ? NAV_LINKS[user.role] ?? [] : []
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 flex-wrap gap-3">
+    <nav className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 shadow-sm flex-wrap gap-3">
       <div className="flex items-center gap-6">
-        <Link to="/" className="text-lg font-semibold text-indigo-600">
-          Locked in
+        <Link to="/" className="flex items-center gap-2">
+          <span className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white text-xs">
+            🔒
+          </span>
+          <span className="text-lg font-semibold bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+            Locked in
+          </span>
         </Link>
         {links.length > 0 && (
           <div className="flex items-center gap-1 text-sm">

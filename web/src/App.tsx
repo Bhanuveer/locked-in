@@ -1,7 +1,8 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { useAuth } from './lib/auth'
+import { Landing } from './pages/Landing'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { StudentDashboard } from './pages/student/Dashboard'
@@ -21,13 +22,18 @@ import { ParentAttendance } from './pages/parent/Attendance'
 function Home() {
   const { user } = useAuth()
   if (user) return <Navigate to={`/${user.role}`} replace />
-  return <Navigate to="/login" replace />
+  return <Landing />
 }
 
 function App() {
+  const { user } = useAuth()
+  const location = useLocation()
+  const publicPages = ['/', '/login', '/register']
+  const showNavbar = user || !publicPages.includes(location.pathname)
+
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar />
+      {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

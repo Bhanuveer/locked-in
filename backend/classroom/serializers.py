@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import ClassRoom, Homework
+from .models import ClassRoom, Homework, HomeworkChatMessage
 
 
 class StudentMiniSerializer(serializers.ModelSerializer):
@@ -28,3 +28,10 @@ class HomeworkSerializer(serializers.ModelSerializer):
         model = Homework
         fields = ['id', 'classroom', 'classroom_name', 'title', 'topic', 'reference_text', 'due_date', 'created_by', 'created_at']
         read_only_fields = ['created_by', 'created_at']
+
+
+class HomeworkChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HomeworkChatMessage
+        fields = ['id', 'homework', 'role', 'content', 'created_at']
+        read_only_fields = ['homework', 'role', 'created_at']

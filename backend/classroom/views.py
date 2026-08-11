@@ -3,8 +3,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import ClassRoom, Homework
-from .serializers import ClassRoomSerializer, HomeworkSerializer
+from . import ai_assistant
+from .models import ClassRoom, Homework, HomeworkChatMessage
+from .serializers import ClassRoomSerializer, HomeworkChatMessageSerializer, HomeworkSerializer
 
 
 class ClassRoomListCreateView(generics.ListCreateAPIView):
@@ -63,3 +64,40 @@ class HomeworkListCreateView(generics.ListCreateAPIView):
         if classroom.teacher != self.request.user:
             raise permissions.exceptions.PermissionDenied('Not your class.')
         serializer.save(created_by=self.request.user)
+
+
+class HomeworkAssistantView(APIView):
+    def get(self, request, pk):
+        homework = self._get_homework(request, pk)
+        if not homework:
+            return Response({'detail': 'Homework not found.'}, status=status.HTTP_404_NOT_FOUND)
+        messages = HomeworkChatMessage.objects.filter(homework=homework, student=request.user)
+        return Response(HomeworkChatMessageSerializer(messages, many=True).data)
+
+    def post(self, request, pk):
+        if request.user.profile.role != 'student':
+            raise permissions.exceptions.PermissionDenied('Only students can use the homework assistant.')
+
+        homework = self._get_homework(request, pk)
+        if not homework:
+            return Response({'detail': 'Homework not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        message = request.data.get('message', '').strip()
+        if not message:
+            return Response({'detail': 'Message is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        history = list(HomeworkChatMessage.objects.filter(homework=homework, student=request.user))
+        user_msg = HomeworkChatMessage.objects.create(
+            homework=homework, student=request.user, role='user', content=message
+        )
+        reply_text = ai_assistant.ask_homework_assistant(homework, history, message)
+        assistant_msg = HomeworkChatMessage.objects.create(
+            homework=homework, student=request.user, role='assistant', content=reply_text
+        )
+        return Response(
+            HomeworkChatMessageSerializer([user_msg, assistant_msg], many=True).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    def _get_homework(self, request, pk):
+        return Homework.objects.filter(pk=pk, classroom__students=request.user).first()

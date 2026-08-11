@@ -4,9 +4,14 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.rewards import award_points
+
 from . import ai_engine
 from .models import SessionQuestion, StudySession
 from .serializers import SessionQuestionSerializer, StudySessionSerializer
+
+POINTS_PER_COMPLETED_SESSION = 15
+POINTS_PER_CORRECT_ANSWER = 5
 
 
 class StudySessionListView(generics.ListAPIView):
@@ -56,7 +61,13 @@ class EndSessionView(APIView):
         elapsed_minutes = int((session.ended_at - session.started_at).total_seconds() // 60)
         session.actual_duration_minutes = elapsed_minutes
         session.status = 'completed' if completed else 'abandoned'
+        if not completed:
+            session.abandon_reason = request.data.get('reason', '')
         session.save()
+
+        if completed:
+            award_points(request.user.profile, POINTS_PER_COMPLETED_SESSION, mark_active_today=True)
+
         return Response(StudySessionSerializer(session).data)
 
 
@@ -94,4 +105,8 @@ class AnswerQuestionView(APIView):
         question.ai_feedback = feedback
         question.answered_at = timezone.now()
         question.save()
+
+        if is_correct:
+            award_points(request.user.profile, POINTS_PER_CORRECT_ANSWER, mark_active_today=True)
+
         return Response(SessionQuestionSerializer(question).data)

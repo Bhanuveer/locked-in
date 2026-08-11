@@ -20,6 +20,7 @@ class StudySession(models.Model):
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='in_progress')
     started_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)
+    abandon_reason = models.TextField(blank=True)
 
     def __str__(self):
         return f'{self.student.username} - {self.subject}/{self.topic} ({self.status})'

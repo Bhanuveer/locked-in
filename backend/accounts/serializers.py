@@ -28,10 +28,13 @@ class RegisterSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source='profile.role', read_only=True)
     invite_code = serializers.CharField(source='profile.invite_code', read_only=True)
+    points = serializers.IntegerField(source='profile.points', read_only=True)
+    streak_days = serializers.IntegerField(source='profile.streak_days', read_only=True)
+    reward_tier = serializers.CharField(source='profile.reward_tier', read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'invite_code']
+        fields = ['id', 'username', 'email', 'role', 'invite_code', 'points', 'streak_days', 'reward_tier']
 
 
 class ParentStudentLinkSerializer(serializers.ModelSerializer):

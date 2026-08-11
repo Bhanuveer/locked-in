@@ -17,6 +17,8 @@ export function SessionPage() {
   const queryClient = useQueryClient()
   const [answer, setAnswer] = useState('')
   const [now, setNow] = useState(Date.now())
+  const [showAbandonPrompt, setShowAbandonPrompt] = useState(false)
+  const [abandonReason, setAbandonReason] = useState('')
 
   const { data: session } = useQuery({
     queryKey: ['session', id],
@@ -48,8 +50,8 @@ export function SessionPage() {
   })
 
   const endSession = useMutation({
-    mutationFn: async (completed: boolean) =>
-      (await api.post(`/sessions/${id}/end/`, { completed })).data,
+    mutationFn: async ({ completed, reason }: { completed: boolean; reason?: string }) =>
+      (await api.post(`/sessions/${id}/end/`, { completed, reason })).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
       queryClient.invalidateQueries({ queryKey: ['session', id] })
@@ -85,6 +87,14 @@ export function SessionPage() {
         <p className="text-slate-500 mb-6">
           {session.subject} — {session.topic}
         </p>
+        {session.status === 'abandoned' && session.abandon_reason && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-left">
+            <p className="text-xs font-medium text-amber-700 uppercase tracking-wide mb-1">
+              Reason logged (visible to your parent)
+            </p>
+            <p className="text-sm text-amber-800">{session.abandon_reason}</p>
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-slate-50 rounded-lg p-4">
             <p className="text-2xl font-semibold text-slate-800">{session.actual_duration_minutes}</p>
@@ -119,20 +129,51 @@ export function SessionPage() {
         <p className="text-xs text-slate-400 mt-1">planned: {session.planned_duration_minutes} min</p>
         <div className="flex justify-center gap-3 mt-5">
           <button
-            onClick={() => endSession.mutate(true)}
+            onClick={() => endSession.mutate({ completed: true })}
             disabled={endSession.isPending}
             className="bg-emerald-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             End session
           </button>
           <button
-            onClick={() => endSession.mutate(false)}
+            onClick={() => setShowAbandonPrompt(true)}
             disabled={endSession.isPending}
             className="border border-slate-300 text-slate-600 rounded-md px-4 py-2 text-sm disabled:opacity-50"
           >
             Abandon
           </button>
         </div>
+
+        {showAbandonPrompt && (
+          <div className="mt-4 pt-4 border-t border-slate-100 text-left">
+            <p className="text-sm font-medium text-slate-700 mb-1">Why are you stopping early?</p>
+            <p className="text-xs text-slate-500 mb-2">
+              This reason is shared with your parent (Parental Mode) instead of just showing "abandoned."
+            </p>
+            <textarea
+              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-2"
+              rows={2}
+              value={abandonReason}
+              onChange={(e) => setAbandonReason(e.target.value)}
+              placeholder="e.g. Felt unwell, had to help with something at home..."
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={() => endSession.mutate({ completed: false, reason: abandonReason })}
+                disabled={endSession.isPending || !abandonReason.trim()}
+                className="bg-amber-600 text-white rounded-md px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+              >
+                Submit & end session
+              </button>
+              <button
+                onClick={() => setShowAbandonPrompt(false)}
+                className="text-sm text-slate-500 px-3 py-1.5"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {pendingQuestion ? (

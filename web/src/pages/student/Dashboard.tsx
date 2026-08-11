@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { api, type StudySession } from '../../lib/api'
+import { api, type StudySession, type User } from '../../lib/api'
 import { useAuth } from '../../lib/auth'
+import { RewardsBanner } from '../../components/RewardsBanner'
 
 export function StudentDashboard() {
   const { user } = useAuth()
@@ -12,6 +13,12 @@ export function StudentDashboard() {
   const [topic, setTopic] = useState('')
   const [duration, setDuration] = useState(30)
   const [error, setError] = useState('')
+
+  const { data: freshUser } = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => (await api.get<User>('/auth/me/')).data,
+    initialData: user ?? undefined,
+  })
 
   const { data: sessions, isLoading } = useQuery({
     queryKey: ['sessions'],
@@ -44,6 +51,7 @@ export function StudentDashboard() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
+      {freshUser && <RewardsBanner user={freshUser} />}
       {user && (
         <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center justify-between">
           <span className="text-sm text-indigo-800">

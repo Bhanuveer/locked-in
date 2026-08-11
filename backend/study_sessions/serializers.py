@@ -21,9 +21,9 @@ class StudySessionSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'student', 'student_username', 'subject', 'topic', 'homework',
             'planned_duration_minutes', 'actual_duration_minutes', 'status',
-            'started_at', 'ended_at', 'questions', 'questions_asked', 'questions_correct',
+            'started_at', 'ended_at', 'abandon_reason', 'questions', 'questions_asked', 'questions_correct',
         ]
-        read_only_fields = ['student', 'actual_duration_minutes', 'status', 'started_at', 'ended_at']
+        read_only_fields = ['student', 'actual_duration_minutes', 'status', 'started_at', 'ended_at', 'abandon_reason']
 
     def get_questions_correct(self, obj):
         return obj.questions.filter(is_correct=True).count()

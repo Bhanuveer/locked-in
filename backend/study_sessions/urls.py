@@ -1,5 +1,6 @@
 from django.urls import path
 
+from .attendance import AttendanceView
 from .views import (
     AnswerQuestionView,
     EndSessionView,
@@ -16,4 +17,5 @@ urlpatterns = [
     path('sessions/<int:pk>/', StudySessionDetailView.as_view(), name='session-detail'),
     path('sessions/<int:pk>/questions/generate/', GenerateQuestionView.as_view(), name='question-generate'),
     path('sessions/<int:pk>/questions/<int:qid>/answer/', AnswerQuestionView.as_view(), name='question-answer'),
+    path('attendance/', AttendanceView.as_view(), name='attendance'),
 ]

@@ -68,6 +68,26 @@ export function ParentDashboard() {
         </div>
       </div>
 
+      {sessions?.some((s) => s.status === 'abandoned' && s.abandon_reason) && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-amber-900 mb-1">Parental Mode alerts</h2>
+          <p className="text-xs text-amber-700 mb-4">Reasons your child logged for stopping a session early.</p>
+          <div className="space-y-2">
+            {sessions
+              .filter((s) => s.status === 'abandoned' && s.abandon_reason)
+              .map((s) => (
+                <div key={s.id} className="bg-white border border-amber-200 rounded-lg p-3">
+                  <p className="text-sm font-medium text-slate-800">
+                    {s.student_username} — {s.subject}/{s.topic}
+                  </p>
+                  <p className="text-xs text-slate-500 mb-1">{new Date(s.started_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-amber-800">"{s.abandon_reason}"</p>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <h2 className="text-lg font-semibold text-slate-800 mb-4">Session history</h2>
         <div className="space-y-2">

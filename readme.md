@@ -1,4 +1,4 @@
-# StudyBuddy — AI-Powered Study Accountability App
+# Locked in — AI-Powered Study Accountability App
 
 A cross-platform system (web dashboard + mobile app + smartwatch companion) that helps students build consistent study habits by locking distracting apps during study sessions, using AI to ask topic-related questions mid-session to verify real studying, using wearable sensors to gauge engagement, and keeping parents and teachers informed through a dashboard.
 

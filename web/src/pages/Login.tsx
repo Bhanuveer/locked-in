@@ -26,7 +26,7 @@ export function Login() {
 
   return (
     <div className="max-w-sm mx-auto mt-16 p-8 bg-white rounded-xl border border-slate-200">
-      <h1 className="text-xl font-semibold text-slate-800 mb-6">Log in to StudyBuddy</h1>
+      <h1 className="text-xl font-semibold text-slate-800 mb-6">Log in to Locked in</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm text-slate-600 mb-1">Username</label>

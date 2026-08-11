@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type StudySession } from '../../lib/api'
 import { MicButton } from '../../components/MicButton'
+import { WatchPanel } from '../../components/WatchPanel'
 
 const AUTO_QUESTION_INTERVAL_SECONDS = 40
 
@@ -27,6 +28,7 @@ export function SessionPage() {
   const [showAbandonPrompt, setShowAbandonPrompt] = useState(false)
   const [abandonReason, setAbandonReason] = useState('')
   const spokenQuestionIdRef = useRef<number | null>(null)
+  const [vibrateSignal, setVibrateSignal] = useState(0)
 
   const { data: session } = useQuery({
     queryKey: ['session', id],
@@ -86,8 +88,14 @@ export function SessionPage() {
     if (pendingQuestion && spokenQuestionIdRef.current !== pendingQuestion.id) {
       spokenQuestionIdRef.current = pendingQuestion.id
       speak(pendingQuestion.question_text)
+      setVibrateSignal((n) => n + 1)
     }
   }, [pendingQuestion])
+
+  const lastAnsweredQuestion = useMemo(() => {
+    const answered = session?.questions.filter((q) => q.is_correct !== null) ?? []
+    return answered.length > 0 ? answered[answered.length - 1] : null
+  }, [session])
 
   if (!session) {
     return <div className="p-8 text-center text-slate-400">Loading session...</div>
@@ -135,7 +143,8 @@ export function SessionPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
+    <div className="space-y-6">
       <div className="bg-white rounded-xl border border-slate-200 p-6 text-center">
         <p className="text-sm text-slate-500 mb-1">
           {session.subject} — {session.topic}
@@ -256,6 +265,18 @@ export function SessionPage() {
             ))}
         </div>
       )}
+    </div>
+
+    <div className="lg:sticky lg:top-6 h-[420px] lg:h-[520px]">
+      <WatchPanel
+        elapsedSeconds={elapsedSeconds}
+        subject={session.subject}
+        topic={session.topic}
+        pendingQuestionText={pendingQuestion?.question_text ?? null}
+        lastAnswerCorrect={lastAnsweredQuestion?.is_correct ?? null}
+        vibrateSignal={vibrateSignal}
+      />
+    </div>
     </div>
   )
 }

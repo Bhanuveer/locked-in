@@ -103,9 +103,9 @@ export function SessionPage() {
 
   if (session.status !== 'in_progress') {
     return (
-      <div className="max-w-xl mx-auto mt-12 p-8 bg-white rounded-xl border border-slate-200 text-center">
+      <div className="max-w-xl mx-auto mt-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
         <h1 className="text-xl font-semibold text-slate-800 mb-2">
-          Session {session.status === 'completed' ? 'complete' : 'abandoned'}
+          Session {session.status === 'completed' ? 'complete 🎉' : 'abandoned'}
         </h1>
         <p className="text-slate-500 mb-6">
           {session.subject} — {session.topic}
@@ -134,7 +134,7 @@ export function SessionPage() {
         </div>
         <button
           onClick={() => navigate('/student')}
-          className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium"
+          className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-5 py-2.5 text-sm font-medium hover:opacity-90 transition"
         >
           Back to dashboard
         </button>
@@ -143,140 +143,139 @@ export function SessionPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-6 text-center">
-        <p className="text-sm text-slate-500 mb-1">
-          {session.subject} — {session.topic}
-        </p>
-        <p className="text-4xl font-semibold text-slate-800 tabular-nums">{formatDuration(elapsedSeconds)}</p>
-        <p className="text-xs text-slate-400 mt-1">planned: {session.planned_duration_minutes} min</p>
-        <div className="flex justify-center gap-3 mt-5">
-          <button
-            onClick={() => endSession.mutate({ completed: true })}
-            disabled={endSession.isPending}
-            className="bg-emerald-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
-          >
-            End session
-          </button>
-          <button
-            onClick={() => setShowAbandonPrompt(true)}
-            disabled={endSession.isPending}
-            className="border border-slate-300 text-slate-600 rounded-md px-4 py-2 text-sm disabled:opacity-50"
-          >
-            Abandon
-          </button>
+    <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-6 items-start">
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center">
+          <p className="text-sm text-slate-500 mb-1">
+            {session.subject} — {session.topic}
+          </p>
+          <p className="text-5xl font-bold text-slate-800 tabular-nums bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+            {formatDuration(elapsedSeconds)}
+          </p>
+          <p className="text-xs text-slate-400 mt-2">planned: {session.planned_duration_minutes} min</p>
+          <div className="flex justify-center gap-3 mt-5">
+            <button
+              onClick={() => endSession.mutate({ completed: true })}
+              disabled={endSession.isPending}
+              className="bg-emerald-600 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-emerald-700 transition disabled:opacity-50"
+            >
+              End session
+            </button>
+            <button
+              onClick={() => setShowAbandonPrompt(true)}
+              disabled={endSession.isPending}
+              className="border border-slate-300 text-slate-600 rounded-md px-4 py-2 text-sm hover:bg-slate-50 transition disabled:opacity-50"
+            >
+              Abandon
+            </button>
+          </div>
+
+          {showAbandonPrompt && (
+            <div className="mt-4 pt-4 border-t border-slate-100 text-left">
+              <p className="text-sm font-medium text-slate-700 mb-1">Why are you stopping early?</p>
+              <p className="text-xs text-slate-500 mb-2">
+                This reason is shared with your parent (Parental Mode) instead of just showing "abandoned."
+              </p>
+              <textarea
+                className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-2"
+                rows={2}
+                value={abandonReason}
+                onChange={(e) => setAbandonReason(e.target.value)}
+                placeholder="e.g. Felt unwell, had to help with something at home..."
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => endSession.mutate({ completed: false, reason: abandonReason })}
+                  disabled={endSession.isPending || !abandonReason.trim()}
+                  className="bg-amber-600 text-white rounded-md px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+                >
+                  Submit & end session
+                </button>
+                <button onClick={() => setShowAbandonPrompt(false)} className="text-sm text-slate-500 px-3 py-1.5">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {showAbandonPrompt && (
-          <div className="mt-4 pt-4 border-t border-slate-100 text-left">
-            <p className="text-sm font-medium text-slate-700 mb-1">Why are you stopping early?</p>
-            <p className="text-xs text-slate-500 mb-2">
-              This reason is shared with your parent (Parental Mode) instead of just showing "abandoned."
-            </p>
-            <textarea
-              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-2"
-              rows={2}
-              value={abandonReason}
-              onChange={(e) => setAbandonReason(e.target.value)}
-              placeholder="e.g. Felt unwell, had to help with something at home..."
-            />
-            <div className="flex gap-2">
+        {pendingQuestion ? (
+          <div className="bg-gradient-to-br from-indigo-50 to-fuchsia-50 border border-indigo-200 rounded-2xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-medium text-indigo-500 uppercase tracking-wide">🧠 AI comprehension check</p>
               <button
-                onClick={() => endSession.mutate({ completed: false, reason: abandonReason })}
-                disabled={endSession.isPending || !abandonReason.trim()}
-                className="bg-amber-600 text-white rounded-md px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+                onClick={() => speak(pendingQuestion.question_text)}
+                className="text-xs text-indigo-500 hover:text-indigo-700"
+                title="Read question aloud"
               >
-                Submit & end session
-              </button>
-              <button
-                onClick={() => setShowAbandonPrompt(false)}
-                className="text-sm text-slate-500 px-3 py-1.5"
-              >
-                Cancel
+                🔊 Replay
               </button>
             </div>
+            <p className="text-slate-800 font-medium mb-4">{pendingQuestion.question_text}</p>
+            <textarea
+              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 bg-white/80 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              rows={3}
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Type your answer, or use the mic..."
+            />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => answerQuestion.mutate(pendingQuestion.id)}
+                disabled={answerQuestion.isPending || !answer.trim()}
+                className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+              >
+                {answerQuestion.isPending ? 'Checking...' : 'Submit answer'}
+              </button>
+              <MicButton label="Speak answer" listeningLabel="Listening..." onResult={(text) => setAnswer(text)} />
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 text-center">
+            <p className="text-sm text-slate-500 mb-3">
+              The AI will ask a topic question automatically (sped up for this demo, roughly every{' '}
+              {AUTO_QUESTION_INTERVAL_SECONDS}s of study).
+            </p>
+            <button
+              onClick={() => generateQuestion.mutate()}
+              disabled={generateQuestion.isPending}
+              className="border border-indigo-300 text-indigo-600 rounded-md px-4 py-2 text-sm font-medium hover:bg-indigo-50 transition disabled:opacity-50"
+            >
+              {generateQuestion.isPending ? 'Thinking...' : 'Ask me a question now'}
+            </button>
+          </div>
+        )}
+
+        {session.questions.filter((q) => q.is_correct !== null).length > 0 && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-slate-600">Answered so far</h3>
+            {session.questions
+              .filter((q) => q.is_correct !== null)
+              .slice()
+              .reverse()
+              .map((q) => (
+                <div key={q.id} className="bg-white border border-slate-200 rounded-lg shadow-sm p-4">
+                  <p className="text-sm text-slate-700 font-medium mb-1">{q.question_text}</p>
+                  <p className="text-sm text-slate-500 mb-1">Your answer: {q.student_answer}</p>
+                  <p className={`text-sm ${q.is_correct ? 'text-emerald-600' : 'text-red-500'}`}>
+                    {q.is_correct ? '✓ Correct' : '✗ Needs work'} — {q.ai_feedback}
+                  </p>
+                </div>
+              ))}
           </div>
         )}
       </div>
 
-      {pendingQuestion ? (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-medium text-indigo-500 uppercase tracking-wide">AI comprehension check</p>
-            <button
-              onClick={() => speak(pendingQuestion.question_text)}
-              className="text-xs text-indigo-500 hover:text-indigo-700"
-              title="Read question aloud"
-            >
-              🔊 Replay
-            </button>
-          </div>
-          <p className="text-slate-800 font-medium mb-4">{pendingQuestion.question_text}</p>
-          <textarea
-            className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3"
-            rows={3}
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Type your answer, or use the mic..."
-          />
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => answerQuestion.mutate(pendingQuestion.id)}
-              disabled={answerQuestion.isPending || !answer.trim()}
-              className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
-            >
-              {answerQuestion.isPending ? 'Checking...' : 'Submit answer'}
-            </button>
-            <MicButton label="Speak answer" listeningLabel="Listening..." onResult={(text) => setAnswer(text)} />
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white border border-slate-200 rounded-xl p-6 text-center">
-          <p className="text-sm text-slate-500 mb-3">
-            The AI will ask a topic question automatically (sped up for this demo, roughly every{' '}
-            {AUTO_QUESTION_INTERVAL_SECONDS}s of study).
-          </p>
-          <button
-            onClick={() => generateQuestion.mutate()}
-            disabled={generateQuestion.isPending}
-            className="border border-indigo-300 text-indigo-600 rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
-          >
-            {generateQuestion.isPending ? 'Thinking...' : 'Ask me a question now'}
-          </button>
-        </div>
-      )}
-
-      {session.questions.filter((q) => q.is_correct !== null).length > 0 && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-600">Answered so far</h3>
-          {session.questions
-            .filter((q) => q.is_correct !== null)
-            .slice()
-            .reverse()
-            .map((q) => (
-              <div key={q.id} className="bg-white border border-slate-200 rounded-lg p-4">
-                <p className="text-sm text-slate-700 font-medium mb-1">{q.question_text}</p>
-                <p className="text-sm text-slate-500 mb-1">Your answer: {q.student_answer}</p>
-                <p className={`text-sm ${q.is_correct ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {q.is_correct ? '✓ Correct' : '✗ Needs work'} — {q.ai_feedback}
-                </p>
-              </div>
-            ))}
-        </div>
-      )}
-    </div>
-
-    <div className="lg:sticky lg:top-6 h-[420px] lg:h-[520px]">
-      <WatchPanel
-        elapsedSeconds={elapsedSeconds}
-        subject={session.subject}
-        topic={session.topic}
-        pendingQuestionText={pendingQuestion?.question_text ?? null}
-        lastAnswerCorrect={lastAnsweredQuestion?.is_correct ?? null}
-        vibrateSignal={vibrateSignal}
-      />
-    </div>
+      <div className="lg:sticky lg:top-6 h-[520px] lg:h-[680px]">
+        <WatchPanel
+          elapsedSeconds={elapsedSeconds}
+          subject={session.subject}
+          topic={session.topic}
+          pendingQuestionText={pendingQuestion?.question_text ?? null}
+          lastAnswerCorrect={lastAnsweredQuestion?.is_correct ?? null}
+          vibrateSignal={vibrateSignal}
+        />
+      </div>
     </div>
   )
 }

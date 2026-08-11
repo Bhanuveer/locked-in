@@ -77,9 +77,9 @@ export function StudentDashboard() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h2 className="text-lg font-semibold text-slate-800">Start a study session</h2>
+          <h2 className="text-lg font-semibold text-slate-800">🎯 Start a study session</h2>
           <LocoAssistant
             onPartialFill={(fields) => {
               if (fields.subject) setSubject(fields.subject)
@@ -127,7 +127,7 @@ export function StudentDashboard() {
             {error && <p className="text-sm text-red-500 mb-2">{error}</p>}
             <button
               disabled={startSession.isPending || !!activeSession}
-              className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+              className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
             >
               {activeSession ? 'Finish your current session first' : startSession.isPending ? 'Starting...' : 'Start session'}
             </button>
@@ -136,7 +136,7 @@ export function StudentDashboard() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Past sessions</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">📅 Past sessions</h2>
         {isLoading && <p className="text-sm text-slate-400">Loading...</p>}
         {sessions && sessions.length === 0 && (
           <p className="text-sm text-slate-400">No sessions yet — start your first one above.</p>
@@ -147,7 +147,7 @@ export function StudentDashboard() {
             .map((s) => (
               <div
                 key={s.id}
-                className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between"
+                className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4 flex items-center justify-between"
               >
                 <div>
                   <p className="font-medium text-slate-800">

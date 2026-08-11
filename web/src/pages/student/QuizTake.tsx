@@ -39,14 +39,14 @@ export function QuizTake() {
     const answerByQuestion = Object.fromEntries(result.answers.map((a) => [a.question, a]))
     return (
       <div className="max-w-2xl mx-auto p-6 space-y-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center">
           <h1 className="text-xl font-semibold text-slate-800 mb-1">Quiz complete</h1>
           <p className="text-3xl font-bold text-indigo-600 mt-2">
             {result.score}/{result.total_questions}
           </p>
           <button
             onClick={() => navigate('/student/quizzes')}
-            className="mt-4 bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium"
+            className="mt-4 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium"
           >
             Back to quizzes
           </button>
@@ -54,7 +54,7 @@ export function QuizTake() {
         {quiz.questions.map((q) => {
           const a = answerByQuestion[q.id]
           return (
-            <div key={q.id} className="bg-white border border-slate-200 rounded-lg p-4">
+            <div key={q.id} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4">
               <p className="text-sm font-medium text-slate-800 mb-2">{q.question_text}</p>
               <p className={`text-sm ${a?.is_correct ? 'text-emerald-600' : 'text-red-500'}`}>
                 {a?.is_correct ? '✓ Correct' : `✗ You picked ${a?.selected_option}. Correct: ${q.correct_option}`}
@@ -72,7 +72,7 @@ export function QuizTake() {
     <div className="max-w-2xl mx-auto p-6 space-y-4">
       <h1 className="text-lg font-semibold text-slate-800">{quiz.title}</h1>
       {quiz.questions.map((q, idx) => (
-        <div key={q.id} className="bg-white border border-slate-200 rounded-lg p-4">
+        <div key={q.id} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4">
           <p className="text-sm font-medium text-slate-800 mb-3">
             {idx + 1}. {q.question_text}
           </p>
@@ -102,7 +102,7 @@ export function QuizTake() {
       <button
         onClick={() => submit.mutate()}
         disabled={!allAnswered || submit.isPending}
-        className="w-full bg-indigo-600 text-white rounded-md py-2.5 text-sm font-medium disabled:opacity-50"
+        className="w-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md py-2.5 text-sm font-medium disabled:opacity-50"
       >
         {submit.isPending ? 'Submitting...' : allAnswered ? 'Submit quiz' : `Answer all ${quiz.questions.length} questions`}
       </button>

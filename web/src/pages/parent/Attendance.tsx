@@ -13,8 +13,8 @@ export function ParentAttendance() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-lg font-semibold text-slate-800 mb-4">Attendance</h1>
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <h1 className="text-lg font-semibold text-slate-800 mb-4">🔥 Attendance</h1>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <select
           className="border border-slate-300 rounded-md px-3 py-2 text-sm mb-4"
           value={selected}

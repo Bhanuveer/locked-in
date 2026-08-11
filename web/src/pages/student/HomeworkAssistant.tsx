@@ -43,7 +43,7 @@ export function HomeworkAssistant() {
         <p className="text-xs text-slate-500">Topic: {homework?.topic} — assistant only uses this material</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-white border border-slate-200 rounded-lg p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4 space-y-3">
         {messages?.length === 0 && (
           <p className="text-sm text-slate-400 text-center mt-8">
             Ask a question about "{homework?.topic}" and the AI will help using only today's material.
@@ -53,7 +53,7 @@ export function HomeworkAssistant() {
           <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-                m.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-800'
+                m.role === 'user' ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white' : 'bg-slate-100 text-slate-800'
               }`}
             >
               {m.content}
@@ -74,7 +74,7 @@ export function HomeworkAssistant() {
         />
         <button
           disabled={send.isPending || !message.trim()}
-          className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
+          className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
         >
           Send
         </button>

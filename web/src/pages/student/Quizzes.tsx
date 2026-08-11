@@ -10,14 +10,14 @@ export function StudentQuizzes() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-lg font-semibold text-slate-800 mb-4">Quizzes</h1>
+      <h1 className="text-lg font-semibold text-slate-800 mb-4">📝 Quizzes</h1>
       {isLoading && <p className="text-sm text-slate-400">Loading...</p>}
       {quizzes?.length === 0 && (
         <p className="text-sm text-slate-400">No quizzes yet — your teacher hasn't generated one.</p>
       )}
       <div className="space-y-2">
         {quizzes?.map((q) => (
-          <div key={q.id} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between">
+          <div key={q.id} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4 flex items-center justify-between">
             <div>
               <p className="font-medium text-slate-800">{q.title}</p>
               <p className="text-xs text-slate-500">
@@ -31,7 +31,7 @@ export function StudentQuizzes() {
             ) : (
               <Link
                 to={`/student/quiz/${q.id}`}
-                className="bg-indigo-600 text-white text-sm rounded-md px-3 py-1.5 font-medium hover:bg-indigo-700"
+                className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white text-sm rounded-md px-3 py-1.5 font-medium hover:opacity-90 transition"
               >
                 Take quiz
               </Link>

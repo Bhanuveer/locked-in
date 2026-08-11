@@ -39,8 +39,8 @@ export function ParentDashboard() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Linked children</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">👨‍👩‍👧 Linked children</h2>
         <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
           <input
             className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm"
@@ -50,7 +50,7 @@ export function ParentDashboard() {
           />
           <button
             disabled={linkChild.isPending}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
+            className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             Link
           </button>
@@ -88,11 +88,11 @@ export function ParentDashboard() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Session history</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">📅 Session history</h2>
         <div className="space-y-2">
           {sessions?.map((s) => (
-            <div key={s.id} className="border border-slate-200 rounded-lg p-3 flex items-center justify-between">
+            <div key={s.id} className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-3 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-800">
                   {s.student_username} — {s.subject}/{s.topic}
@@ -110,11 +110,11 @@ export function ParentDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Homework status</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">📝 Homework status</h2>
         <div className="space-y-2">
           {homework?.map((h) => (
-            <div key={h.id} className="border border-slate-200 rounded-lg p-3">
+            <div key={h.id} className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-3">
               <p className="text-sm font-medium text-slate-800">{h.title}</p>
               <p className="text-xs text-slate-500">
                 {h.classroom_name} · Topic: {h.topic}

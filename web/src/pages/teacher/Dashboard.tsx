@@ -77,8 +77,8 @@ export function TeacherDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Your classes</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">🏫 Your classes</h2>
         <form onSubmit={handleCreateClass} className="flex gap-2 mb-6">
           <input
             className="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm"
@@ -88,7 +88,7 @@ export function TeacherDashboard() {
           />
           <button
             disabled={createClass.isPending}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
+            className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             Create
           </button>
@@ -98,7 +98,7 @@ export function TeacherDashboard() {
 
         <div className="space-y-4">
           {classes?.map((c) => (
-            <div key={c.id} className="border border-slate-200 rounded-lg p-4">
+            <div key={c.id} className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4">
               <p className="font-medium text-slate-800">
                 {c.name} <span className="text-xs text-slate-400">({c.student_count} students)</span>
               </p>
@@ -126,8 +126,8 @@ export function TeacherDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Homework</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">📝 Homework</h2>
         <form onSubmit={handleCreateHomework} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           <select
             className="border border-slate-300 rounded-md px-3 py-2 text-sm"
@@ -161,14 +161,14 @@ export function TeacherDashboard() {
           />
           <button
             disabled={createHomework.isPending}
-            className="sm:col-span-2 bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
+            className="sm:col-span-2 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             Assign homework
           </button>
         </form>
         <div className="space-y-2">
           {homework?.map((h) => (
-            <div key={h.id} className="border border-slate-200 rounded-lg p-3">
+            <div key={h.id} className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-3">
               <p className="font-medium text-slate-800 text-sm">
                 {h.title} <span className="text-xs text-slate-400">({h.classroom_name})</span>
               </p>
@@ -179,11 +179,11 @@ export function TeacherDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Student session history</h2>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">📊 Student session history</h2>
         <div className="space-y-2">
           {sessions?.map((s) => (
-            <div key={s.id} className="border border-slate-200 rounded-lg p-3 flex items-center justify-between">
+            <div key={s.id} className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-3 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-800">
                   {s.student_username} — {s.subject}/{s.topic}

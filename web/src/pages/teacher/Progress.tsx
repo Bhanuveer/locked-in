@@ -69,7 +69,7 @@ export function TeacherProgress() {
     <div className="max-w-3xl mx-auto p-6 space-y-8">
       <h1 className="text-lg font-semibold text-slate-800">Class progress</h1>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <h2 className="text-sm font-medium text-slate-600 mb-4">Average accuracy per student</h2>
         {perStudent.length === 0 ? (
           <p className="text-sm text-slate-400">No answered questions yet.</p>
@@ -86,7 +86,7 @@ export function TeacherProgress() {
         )}
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <h2 className="text-sm font-medium text-slate-600 mb-4">Class accuracy trend over time</h2>
         {weeklyTrend.length === 0 ? (
           <p className="text-sm text-slate-400">Not enough data yet.</p>

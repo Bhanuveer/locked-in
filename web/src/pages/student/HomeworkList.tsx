@@ -18,7 +18,7 @@ export function StudentHomeworkList() {
       {homework?.length === 0 && <p className="text-sm text-slate-400">No homework assigned yet.</p>}
       <div className="space-y-2">
         {homework?.map((h) => (
-          <div key={h.id} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between">
+          <div key={h.id} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition p-4 flex items-center justify-between">
             <div>
               <p className="font-medium text-slate-800">{h.title}</p>
               <p className="text-xs text-slate-500">
@@ -28,7 +28,7 @@ export function StudentHomeworkList() {
             </div>
             <Link
               to={`/student/homework/${h.id}`}
-              className="bg-indigo-600 text-white text-sm rounded-md px-3 py-1.5 font-medium hover:bg-indigo-700"
+              className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white text-sm rounded-md px-3 py-1.5 font-medium hover:opacity-90 transition"
             >
               Ask AI assistant
             </Link>

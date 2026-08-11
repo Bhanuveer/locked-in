@@ -1,9 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type StudySession } from '../../lib/api'
+import { MicButton } from '../../components/MicButton'
 
 const AUTO_QUESTION_INTERVAL_SECONDS = 40
+
+function speak(text: string) {
+  if (!('speechSynthesis' in window)) return
+  window.speechSynthesis.cancel()
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))
+}
 
 function formatDuration(totalSeconds: number) {
   const m = Math.floor(totalSeconds / 60)
@@ -19,6 +26,7 @@ export function SessionPage() {
   const [now, setNow] = useState(Date.now())
   const [showAbandonPrompt, setShowAbandonPrompt] = useState(false)
   const [abandonReason, setAbandonReason] = useState('')
+  const spokenQuestionIdRef = useRef<number | null>(null)
 
   const { data: session } = useQuery({
     queryKey: ['session', id],
@@ -73,6 +81,13 @@ export function SessionPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [now, session?.status, pendingQuestion, lastQuestionAt])
+
+  useEffect(() => {
+    if (pendingQuestion && spokenQuestionIdRef.current !== pendingQuestion.id) {
+      spokenQuestionIdRef.current = pendingQuestion.id
+      speak(pendingQuestion.question_text)
+    }
+  }, [pendingQuestion])
 
   if (!session) {
     return <div className="p-8 text-center text-slate-400">Loading session...</div>
@@ -178,22 +193,34 @@ export function SessionPage() {
 
       {pendingQuestion ? (
         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
-          <p className="text-xs font-medium text-indigo-500 uppercase tracking-wide mb-2">AI comprehension check</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-medium text-indigo-500 uppercase tracking-wide">AI comprehension check</p>
+            <button
+              onClick={() => speak(pendingQuestion.question_text)}
+              className="text-xs text-indigo-500 hover:text-indigo-700"
+              title="Read question aloud"
+            >
+              🔊 Replay
+            </button>
+          </div>
           <p className="text-slate-800 font-medium mb-4">{pendingQuestion.question_text}</p>
           <textarea
             className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3"
             rows={3}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Type your answer..."
+            placeholder="Type your answer, or use the mic..."
           />
-          <button
-            onClick={() => answerQuestion.mutate(pendingQuestion.id)}
-            disabled={answerQuestion.isPending || !answer.trim()}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
-          >
-            {answerQuestion.isPending ? 'Checking...' : 'Submit answer'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => answerQuestion.mutate(pendingQuestion.id)}
+              disabled={answerQuestion.isPending || !answer.trim()}
+              className="bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50"
+            >
+              {answerQuestion.isPending ? 'Checking...' : 'Submit answer'}
+            </button>
+            <MicButton label="Speak answer" listeningLabel="Listening..." onResult={(text) => setAnswer(text)} />
+          </div>
         </div>
       ) : (
         <div className="bg-white border border-slate-200 rounded-xl p-6 text-center">

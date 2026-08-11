@@ -71,6 +71,14 @@ class EndSessionView(APIView):
         return Response(StudySessionSerializer(session).data)
 
 
+class ParseVoiceCommandView(APIView):
+    def post(self, request):
+        text = request.data.get('text', '').strip()
+        if not text:
+            return Response({'detail': 'text is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(ai_engine.parse_voice_command(text))
+
+
 class GenerateQuestionView(APIView):
     def post(self, request, pk):
         try:

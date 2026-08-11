@@ -5,6 +5,7 @@ from .views import (
     AnswerQuestionView,
     EndSessionView,
     GenerateQuestionView,
+    ParseVoiceCommandView,
     StartSessionView,
     StudySessionDetailView,
     StudySessionListView,
@@ -18,4 +19,5 @@ urlpatterns = [
     path('sessions/<int:pk>/questions/generate/', GenerateQuestionView.as_view(), name='question-generate'),
     path('sessions/<int:pk>/questions/<int:qid>/answer/', AnswerQuestionView.as_view(), name='question-answer'),
     path('attendance/', AttendanceView.as_view(), name='attendance'),
+    path('voice/parse-session/', ParseVoiceCommandView.as_view(), name='voice-parse-session'),
 ]

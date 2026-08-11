@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { api, type StudySession, type User } from '../../lib/api'
 import { useAuth } from '../../lib/auth'
 import { RewardsBanner } from '../../components/RewardsBanner'
+import { MicButton } from '../../components/MicButton'
 
 export function StudentDashboard() {
   const { user } = useAuth()
@@ -13,6 +14,24 @@ export function StudentDashboard() {
   const [topic, setTopic] = useState('')
   const [duration, setDuration] = useState(30)
   const [error, setError] = useState('')
+  const [voiceStatus, setVoiceStatus] = useState('')
+
+  const parseVoice = useMutation({
+    mutationFn: async (text: string) =>
+      (
+        await api.post<{ subject: string; topic: string; planned_duration_minutes: number | null }>(
+          '/voice/parse-session/',
+          { text }
+        )
+      ).data,
+    onSuccess: (data) => {
+      if (data.subject) setSubject(data.subject)
+      if (data.topic) setTopic(data.topic)
+      if (data.planned_duration_minutes) setDuration(data.planned_duration_minutes)
+      setVoiceStatus('Filled in from your voice — check it looks right, then start the session.')
+    },
+    onError: () => setVoiceStatus("Couldn't understand that — try again or fill the form manually."),
+  })
 
   const { data: freshUser } = useQuery({
     queryKey: ['me'],
@@ -77,7 +96,22 @@ export function StudentDashboard() {
       )}
 
       <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Start a study session</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-800">Start a study session</h2>
+          <MicButton
+            label="Speak session details"
+            listeningLabel="Listening..."
+            onResult={(text) => {
+              setVoiceStatus('')
+              parseVoice.mutate(text)
+            }}
+          />
+        </div>
+        {(parseVoice.isPending || voiceStatus) && (
+          <p className="text-xs text-indigo-600 mb-3">
+            {parseVoice.isPending ? 'Understanding what you said...' : voiceStatus}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm text-slate-600 mb-1">Subject</label>
